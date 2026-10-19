@@ -3,8 +3,14 @@
 namespace tremolo {
 class Tremolo {
 public:
+  enum class LfoWaveform : size_t {
+    sine = 0,
+    triangle = 1,
+  };
   Tremolo() {
-    lfo.setFrequency(5.f, /* hz*/ true);
+    for (auto& lfo : lfos) {
+      lfo.setFrequency(5.f, /* hz*/ true);
+    }
   }
   void prepare(double sampleRate, int expectedMaxFramesPerBlock) {
     // juce::ignoreUnused(sampleRate, expectedMaxFramesPerBlock);
@@ -13,15 +19,34 @@ public:
       .maximumBlockSize = static_cast<juce::uint32>(expectedMaxFramesPerBlock),
       .numChannels = 1u,
     };
-    lfo.prepare(processSpec);
+
+    for (auto& lfo : lfos) {
+      lfo.prepare(processSpec);
+    }
   }
 
+  void setLfoWaveform(LfoWaveform waveform) {
+    jassert(waveform == LfoWaveform::sine || waveform == LfoWaveform::triangle);
+
+    lfoToSet = waveform;
+  }
+
+
+  void setModulationRate(float rateHz) {
+      for (auto& lfo : lfos) {
+        lfo.setFrequency(rateHz);
+      }
+  }
+
+
   void process(juce::AudioBuffer<float>& buffer) noexcept {
+    updateLfoWaveform();
     // for each frame
     for (const auto frameIndex : std::views::iota(0, buffer.getNumSamples())) {
       
       // generate the LFO value
-      const auto lfoValue = lfo.processSample(0.f);
+
+      const auto lfoValue = lfos[juce::toUnderlyingType(currentLfo)].processSample(0.f);
 
       constexpr auto modulationDepth = 0.4f;
       // calculate the modulation value
@@ -46,13 +71,36 @@ public:
   }
 
   void reset() noexcept {
-    lfo.reset();
+
+    for (auto& lfo : lfos) {
+      lfo.reset();
+    }
   }
 
 private:
   // You should put class members and private functions here
-  juce::dsp::Oscillator<float> lfo{ [](auto phase) {
-    return std::sin(phase);
-  }};
+
+  static float triangle(float phase) {
+    const auto ft = phase / juce::MathConstants<float>::twoPi;
+    return 4.f * std::abs(ft - std::floor(ft + 0.5f) - 1.f);
+  }
+
+  void updateLfoWaveform() {
+    if (currentLfo != lfoToSet){
+        currentLfo = lfoToSet;
+      }
+  }
+
+  float getNextLfoValue() {
+    return lfos[juce::toUnderlyingType(currentLfo)].processSample(0.f);
+  }
+
+  std::array<juce::dsp::Oscillator<float>, 2u> lfos{ 
+    juce::dsp::Oscillator<float>{ [](auto phase) {return std::sin(phase); }},
+    juce::dsp::Oscillator<float>{triangle},
+  };
+
+  LfoWaveform currentLfo = LfoWaveform::sine;
+  LfoWaveform lfoToSet = currentLfo;
 };
 }  // namespace tremolo
