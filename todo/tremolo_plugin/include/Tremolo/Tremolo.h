@@ -38,6 +38,10 @@ public:
       }
   }
 
+  void setGain(float gain) {
+      outputGain = juce::Decibels::decibelsToGain(gain);
+  }
+
 
   void process(juce::AudioBuffer<float>& buffer) noexcept {
     updateLfoWaveform();
@@ -55,6 +59,8 @@ public:
 
 
 
+
+
       // for each channel sample in the frame
       for (const auto channelIndex :
            std::views::iota(0, buffer.getNumChannels())) {
@@ -62,7 +68,7 @@ public:
         const auto inputSample = buffer.getSample(channelIndex, frameIndex);
 
         // modulate the sample
-        const auto outputSample = inputSample * modulationValue;
+        const auto outputSample = inputSample * modulationValue * outputGain;
 
         // set the output sample
         buffer.setSample(channelIndex, frameIndex, outputSample);
@@ -79,6 +85,8 @@ public:
 
 private:
   // You should put class members and private functions here
+
+  float outputGain = 1.0f;
 
   static float triangle(float phase) {
     const auto ft = phase / juce::MathConstants<float>::twoPi;
