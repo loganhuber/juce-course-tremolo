@@ -14,6 +14,9 @@ public:
   }
   void prepare(double sampleRate, int expectedMaxFramesPerBlock) {
     // juce::ignoreUnused(sampleRate, expectedMaxFramesPerBlock);
+
+    outputGain.reset(sampleRate, 0.1);
+
     const juce::dsp::ProcessSpec processSpec {
       .sampleRate = sampleRate,
       .maximumBlockSize = static_cast<juce::uint32>(expectedMaxFramesPerBlock),
@@ -38,8 +41,11 @@ public:
       }
   }
 
+  // TODO apply gain transition smoothing
+
+
   void setGain(float gain) {
-      outputGain = juce::Decibels::decibelsToGain(gain);
+    outputGain.setTargetValue(juce::Decibels::decibelsToGain(gain));
   }
 
 
@@ -56,19 +62,17 @@ public:
       // calculate the modulation value
 
       const auto modulationValue = modulationDepth * lfoValue + 1.f;
-
-
-
-
+      
+      const auto nextOutputGain = outputGain.getNextValue();
 
       // for each channel sample in the frame
       for (const auto channelIndex :
            std::views::iota(0, buffer.getNumChannels())) {
         // get the input sample
         const auto inputSample = buffer.getSample(channelIndex, frameIndex);
-
+        
         // modulate the sample
-        const auto outputSample = inputSample * modulationValue * outputGain;
+        const auto outputSample = inputSample * modulationValue * nextOutputGain;
 
         // set the output sample
         buffer.setSample(channelIndex, frameIndex, outputSample);
@@ -86,7 +90,8 @@ public:
 private:
   // You should put class members and private functions here
 
-  float outputGain = 1.0f;
+  juce::SmoothedValue<float> outputGain = 1.0f;
+
 
   static float triangle(float phase) {
     const auto ft = phase / juce::MathConstants<float>::twoPi;
