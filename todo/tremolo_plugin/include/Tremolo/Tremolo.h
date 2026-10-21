@@ -96,7 +96,6 @@ private:
 
 
   juce::SmoothedValue<float> modulationDepth = 0.4f;
-
   juce::SmoothedValue<float> outputGain = 1.0f;
 
   static float triangle(float phase) {

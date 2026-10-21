@@ -10,6 +10,7 @@ TEST(JsonSerializer, SerializeToString) {
   parameters.bypassed = true;
   parameters.waveform = 1;
   parameters.depth = 0.4f;
+  parameters.gain = 1.0f;
 
   const juce::String expectedOutput =
       u8R"({
@@ -18,7 +19,8 @@ TEST(JsonSerializer, SerializeToString) {
   "modulationRateHz": 10.0,
   "bypassed": true,
   "modulationWaveform": "Triangle",
-  "modulationDepth": 0.4
+  "modulationDepth": 0.4,
+  "gain": 1.0
 })";
   juce::MemoryBlock block;
   juce::MemoryOutputStream outputStream{block, false};
@@ -39,7 +41,8 @@ TEST(JsonSerializer, DeserializeFromString) {
   "modulationRateHz": 10.0,
   "bypassed": true,
   "modulationWaveform": "Triangle",
-  "modulationDepth": 0.4
+  "modulationDepth": 0.4,
+  "gain": 1.0
 })";
 
   juce::MemoryInputStream inputStream{
@@ -68,7 +71,8 @@ TEST(JsonSerializer, DontUpdateParametersWhenWaveformNameIsInvalid) {
   "modulationRateHz": 10.0,
   "bypassed": true,
   "modulationWaveform": "Foo",
-  "modulationDepth": 0.4
+  "modulationDepth": 0.4,
+  "gain": 1.0
 })";
 
   juce::MemoryInputStream inputStream{
@@ -82,6 +86,7 @@ TEST(JsonSerializer, DontUpdateParametersWhenWaveformNameIsInvalid) {
   parameters.bypassed = false;
   parameters.rate = 5.f;
   parameters.depth = 0.4f;
+  parameters.gain = 1.0f;
 
   // when
   const auto result = JsonSerializer::deserialize(inputStream, parameters);
