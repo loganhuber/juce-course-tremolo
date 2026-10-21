@@ -6,6 +6,7 @@ namespace tremolo {
       float rate;
       bool bypassed;
       juce::String waveform;
+      float depth;
 
       static constexpr auto marshallingVersion = 1;
 
@@ -27,7 +28,8 @@ namespace tremolo {
 
         archive(named("modulationRateHz", t.rate),
          named("bypassed", t.bypassed), 
-         named("modulationWaveform", t.waveform));
+         named("modulationWaveform", t.waveform),
+        named("modulationDepth", t.depth));
 
       }
     };
@@ -37,6 +39,7 @@ namespace tremolo {
         .rate = parameters.rate.get(),
         .bypassed = parameters.bypassed.get(),
         .waveform = parameters.waveform.getCurrentChoiceName(),
+        .depth = parameters.depth.get()
       };
     }
   } // unnamed namespace 
@@ -89,6 +92,7 @@ juce::Result JsonSerializer::deserialize(juce::InputStream& input,
   parameters.waveform = modulationWaveformIndex;
   parameters.rate = parsedParameters->rate;
   parameters.bypassed = parsedParameters->bypassed;
+  parameters.depth = parsedParameters->depth;
 
   return juce::Result::ok();
 }

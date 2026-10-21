@@ -16,6 +16,7 @@ public:
     // juce::ignoreUnused(sampleRate, expectedMaxFramesPerBlock);
 
     outputGain.reset(sampleRate, 0.1);
+    modulationDepth.reset(sampleRate, 0.1);
 
     const juce::dsp::ProcessSpec processSpec {
       .sampleRate = sampleRate,
@@ -41,11 +42,12 @@ public:
       }
   }
 
-  // TODO apply gain transition smoothing
-
-
   void setGain(float gain) {
     outputGain.setTargetValue(juce::Decibels::decibelsToGain(gain));
+  }
+
+  void setModulationDepth(float depth) {
+    modulationDepth.setTargetValue(depth);
   }
 
 
@@ -58,10 +60,12 @@ public:
 
       const auto lfoValue = lfos[juce::toUnderlyingType(currentLfo)].processSample(0.f);
 
-      constexpr auto modulationDepth = 0.4f;
+
+
+      // constexpr auto modulationDepth = 0.4f;
       // calculate the modulation value
 
-      const auto modulationValue = modulationDepth * lfoValue + 1.f;
+      const auto modulationValue = modulationDepth.getNextValue() * lfoValue + 1.f;
       
       const auto nextOutputGain = outputGain.getNextValue();
 
@@ -90,8 +94,10 @@ public:
 private:
   // You should put class members and private functions here
 
-  juce::SmoothedValue<float> outputGain = 1.0f;
 
+  juce::SmoothedValue<float> modulationDepth = 0.4f;
+
+  juce::SmoothedValue<float> outputGain = 1.0f;
 
   static float triangle(float phase) {
     const auto ft = phase / juce::MathConstants<float>::twoPi;
