@@ -55,7 +55,10 @@ void PluginProcessor::prepareToPlay(double sampleRate,
   // Use this method as the place to do any pre-playback
   // initialization that you need, e.g., allocate memory.
 
+  
+
   bypassTransitionSmoother.prepare({
+    .sampleRate = sampleRate,
     .maximumBlockSize = static_cast<juce::uint32>(expectedMaxFramesPerBlock),
     .numChannels = static_cast<juce::uint32>(juce::jmax(getTotalNumInputChannels(), getTotalNumOutputChannels()))
   });
@@ -128,12 +131,12 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 }
 
 bool PluginProcessor::hasEditor() const {
-  return false;
+  return true;
 }
 
 // This function will be called to create an instance of the editor
 juce::AudioProcessorEditor* PluginProcessor::createEditor() {
-  return nullptr;
+  return new PluginEditor(*this);
 }
 
 void PluginProcessor::getStateInformation(juce::MemoryBlock& destData) {
