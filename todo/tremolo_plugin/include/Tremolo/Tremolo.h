@@ -60,13 +60,10 @@ public:
 
       const auto lfoValue = lfos[juce::toUnderlyingType(currentLfo)].processSample(0.f);
 
-
-
       // constexpr auto modulationDepth = 0.4f;
       // calculate the modulation value
 
       const auto modulationValue = modulationDepth.getNextValue() * lfoValue + 1.f;
-      
       const auto nextOutputGain = outputGain.getNextValue();
 
       // for each channel sample in the frame
