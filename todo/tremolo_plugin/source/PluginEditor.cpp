@@ -1,5 +1,6 @@
 namespace tremolo {
 PluginEditor::PluginEditor(PluginProcessor& p) : AudioProcessorEditor(&p), 
+waveformAttachment{p.getParameterRefs().waveform, waveformComboBox},
 rateAttachment{p.getParameterRefs().rate, rateSlider}, 
 bypassAttachment{p.getParameterRefs().bypassed, bypasssButton} {
 
@@ -20,6 +21,7 @@ bypassAttachment{p.getParameterRefs().bypassed, bypasssButton} {
     addAndMakeVisible(logo);
     addAndMakeVisible(logo2);
     addAndMakeVisible(logo3);
+    
       
     rateSlider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
     rateSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
@@ -41,7 +43,11 @@ bypassAttachment{p.getParameterRefs().bypassed, bypasssButton} {
     };
     bypasssButton.onClick();
 
+    waveformComboBox.addItemList(p.getParameterRefs().waveform.choices, 1);
+    waveformAttachment.sendInitialUpdate();
+
     addAndMakeVisible(rateSlider);
+    addAndMakeVisible(waveformComboBox);
     addAndMakeVisible(lfoVisualizer);
     addAndMakeVisible(curveWidthSlider);
     addAndMakeVisible(bypasssButton);
@@ -65,6 +71,14 @@ void PluginEditor::resized() {
   logo.setBounds({16, 16, 105, 24});
   logo2.setBounds({200, 16, 105, 24});
   logo3.setBounds({419, 16, 105, 24});
+
+  auto waveFormComboBoxBounds = bounds;
+  waveFormComboBoxBounds.removeFromTop(66);
+  waveFormComboBoxBounds.removeFromBottom(176);
+  waveFormComboBoxBounds.removeFromLeft(16);
+  waveFormComboBoxBounds.removeFromRight(392);
+
+  waveformComboBox.setBounds(waveFormComboBoxBounds);
 
   auto curveWidthSliderBounds = bounds;
   curveWidthSliderBounds.removeFromTop(270);

@@ -14,12 +14,16 @@ private:
   juce::ImageComponent logo2;
   juce::ImageComponent logo3;
 
+  juce::ComboBox waveformComboBox;
+  juce::ComboBoxParameterAttachment waveformAttachment;
+
   // RateSlider rateSlider;
   juce::Slider rateSlider;
   juce::SliderParameterAttachment rateAttachment;
 
   juce::ToggleButton bypasssButton{"BYPASEED"};
   juce::ButtonParameterAttachment bypassAttachment;
+
   
 
   juce::Slider curveWidthSlider;
