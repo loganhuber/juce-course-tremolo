@@ -46,10 +46,15 @@ bypassAttachment{p.getParameterRefs().bypassed, bypasssButton} {
     addAndMakeVisible(curveWidthSlider);
     addAndMakeVisible(bypasssButton);
 
+    setLookAndFeel(&lookAndFeel);
 
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
     setSize(540, 300);
+}
+
+PluginEditor::~PluginEditor() {
+    setLookAndFeel(nullptr);
 }
 
 void PluginEditor::resized() {
