@@ -51,6 +51,11 @@ bypassAttachment{p.getParameterRefs().bypassed, bypasssButton} {
     addAndMakeVisible(lfoVisualizer);
     addAndMakeVisible(curveWidthSlider);
     addAndMakeVisible(bypasssButton);
+    addAndMakeVisible(waveformLabel);
+    addAndMakeVisible(rateLabel);
+    addAndMakeVisible(bypassedLabel);
+    bypassedLabel.setFont(CustomLookAndFeel::getSideLabelsFont());
+    waveformLabel.setFont(CustomLookAndFeel::getSideLabelsFont());
 
     setLookAndFeel(&lookAndFeel);
 
@@ -73,12 +78,16 @@ void PluginEditor::resized() {
   logo3.setBounds({419, 16, 105, 24});
 
   auto waveFormComboBoxBounds = bounds;
-  waveFormComboBoxBounds.removeFromTop(66);
+  waveFormComboBoxBounds.removeFromTop(99);
   waveFormComboBoxBounds.removeFromBottom(176);
   waveFormComboBoxBounds.removeFromLeft(16);
   waveFormComboBoxBounds.removeFromRight(392);
 
   waveformComboBox.setBounds(waveFormComboBoxBounds);
+
+  const auto waveformLabelBounds = waveFormComboBoxBounds.translated(0, -waveFormComboBoxBounds.getHeight());
+  waveformLabel.setBounds(waveformLabelBounds);
+
 
   auto curveWidthSliderBounds = bounds;
   curveWidthSliderBounds.removeFromTop(270);
@@ -90,14 +99,24 @@ void PluginEditor::resized() {
   rateSliderBounds.removeFromLeft(230);
   rateSliderBounds.removeFromRight(230);
   rateSlider.setBounds(rateSliderBounds);
+  
+  rateLabel.setBounds(rateSliderBounds);
+  rateLabel.setJustificationType(juce::Justification::centred);
+  rateLabel.setInterceptsMouseClicks(false, false);
+
 
   lfoVisualizer.setBounds({18, 148, 504, 92});
 
   auto buttonBounds = bounds;
-  buttonBounds.removeFromTop(66);
+  buttonBounds.removeFromTop(99);
   buttonBounds.removeFromRight(16);
   buttonBounds.removeFromBottom(176);
   buttonBounds.removeFromLeft(392);
   bypasssButton.setBounds(buttonBounds);
+  
+  const auto bypassedLabelBounds = buttonBounds.translated(0, -buttonBounds.getHeight());
+  bypassedLabel.setBounds(bypassedLabelBounds);
+
+  
 }
 }  // namespace tremolo

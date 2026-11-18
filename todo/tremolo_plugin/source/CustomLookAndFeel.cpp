@@ -50,8 +50,23 @@ namespace tremolo {
             g.setColour(juce::Colour{0xFFDDECFF});
 
         }
+        
+        g.setFont(interMedium().withPointHeight(12.f));   
+                                                    
+    //    DBG(g.getCurrentFont().getTypefacePtr()->getName());
         g.drawText(button.getButtonText(), bounds, juce::Justification::centred, false);
         
+    }
+
+
+    juce::FontOptions CustomLookAndFeel::interMedium() 
+    {
+        static const auto result = juce::FontOptions{
+            juce::Typeface::createSystemTypefaceFor(
+                assets::interMedium_ttf, 
+                assets::interMedium_ttfSize
+            )};
+            return juce::FontOptions{result};
     }
 
 }  // namespace tremolo
