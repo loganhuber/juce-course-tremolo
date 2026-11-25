@@ -10,17 +10,9 @@ bypassAttachment{p.getParameterRefs().bypassed, bypasssButton} {
   logo.setImage(
       juce::ImageCache::getFromMemory(assets::Logo_png, assets::Logo_pngSize));
     
-  logo2.setImage(
-      juce::ImageCache::getFromMemory(assets::Logo_png, assets::Logo_pngSize));
-
-  logo3.setImage(
-      juce::ImageCache::getFromMemory(assets::Logo_png, assets::Logo_pngSize));
-    
       
     addAndMakeVisible(background);
     addAndMakeVisible(logo);
-    addAndMakeVisible(logo2);
-    addAndMakeVisible(logo3);
     
       
     rateSlider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
@@ -74,8 +66,6 @@ void PluginEditor::resized() {
   background.setBounds({0, 0, getWidth(), 270});
 
   logo.setBounds({16, 16, 105, 24});
-  logo2.setBounds({200, 16, 105, 24});
-  logo3.setBounds({419, 16, 105, 24});
 
   auto waveFormComboBoxBounds = bounds;
   waveFormComboBoxBounds.removeFromTop(99);
@@ -94,7 +84,7 @@ void PluginEditor::resized() {
   curveWidthSlider.setBounds(curveWidthSliderBounds);
 
   auto rateSliderBounds = bounds;
-  rateSliderBounds.removeFromBottom(150);
+  rateSliderBounds.removeFromBottom(180);
   rateSliderBounds.removeFromTop(40);
   rateSliderBounds.removeFromLeft(230);
   rateSliderBounds.removeFromRight(230);

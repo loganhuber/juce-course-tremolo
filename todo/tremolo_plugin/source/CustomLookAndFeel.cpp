@@ -58,6 +58,27 @@ namespace tremolo {
         
     }
 
+    void CustomLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
+         float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, juce::Slider&) 
+    {
+        juce::ignoreUnused(rotaryEndAngle);
+        juce::ignoreUnused(rotaryStartAngle);
+        juce::ignoreUnused(sliderPosProportional);
+
+
+        auto bounds = juce::Rectangle{x, y, width, height}.toFloat().reduced(3.75f);
+        g.setColour(juce::Colour{0xFF2A3A3B});
+        g.fillEllipse(bounds);
+
+        auto toAngle = 
+            rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);
+
+        juce::Path valueArc;
+        valueArc.addPieSegment(bounds.reduced(0.25f), rotaryStartAngle, toAngle, 0.f);
+
+        g.setColour(juce::Colour{0xFFFFAA00});
+        g.fillPath(valueArc);
+    }
 
     juce::FontOptions CustomLookAndFeel::interMedium() 
     {
