@@ -22,6 +22,8 @@ namespace tremolo {
 
                 g.setColour(juce::Colours::orange);
                 g.fillPath(valueArc);
+
+                
             }
         };
 

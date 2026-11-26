@@ -61,10 +61,6 @@ namespace tremolo {
     void CustomLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height,
          float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, juce::Slider&) 
     {
-        juce::ignoreUnused(rotaryEndAngle);
-        juce::ignoreUnused(rotaryStartAngle);
-        juce::ignoreUnused(sliderPosProportional);
-
 
         auto bounds = juce::Rectangle{x, y, width, height}.toFloat().reduced(3.75f);
         g.setColour(juce::Colour{0xFF2A3A3B});
@@ -78,6 +74,34 @@ namespace tremolo {
 
         g.setColour(juce::Colour{0xFFFFAA00});
         g.fillPath(valueArc);
+        
+        auto cannalBounds = bounds.reduced(2.0f);
+        g.setColour(juce::Colour{0xFF2A3A3B});
+        g.fillEllipse(cannalBounds.reduced(3.0f));
+
+        auto knobStrokeBounds = cannalBounds.reduced(4.5f);
+        g.setColour(juce::Colour{0xFF0B1E3A});
+        g.fillEllipse(knobStrokeBounds);
+
+        auto knobBounds = cannalBounds.reduced(6.5f);
+        auto knobGradient = juce::ColourGradient::vertical(juce::Colour{0xFF060F1C}, knobBounds.getBottom(), juce::Colour{0xFF4A7090}, 0.f);
+
+        g.setGradientFill(knobGradient);
+        g.fillEllipse(knobBounds);
+
+        auto knobTopBounds = knobStrokeBounds.reduced(8.f);
+
+        g.setColour(juce::Colour{0x4C08EFA2});
+        g.fillEllipse(knobTopBounds);
+        
+        auto knobTopGradient = juce::ColourGradient::vertical(juce::Colour{0xFF1B1E48}, knobBounds.getBottom(), juce::Colour{0xFF6697CB}, 0.f);
+        g.setGradientFill(knobTopGradient);
+        g.fillEllipse(knobTopBounds);
+
+        auto knobEdgeGradient = juce::ColourGradient::vertical(juce::Colour{0xFF1A0F4E}, knobTopBounds.getBottom(), juce::Colour{0xFF8FFFFF}, 0.f);
+        
+        g.drawEllipse(knobTopBounds, 5.0f);
+
     }
 
     juce::FontOptions CustomLookAndFeel::interMedium() 
